@@ -8,12 +8,15 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const path = require('path');
+const hpp = require('hpp');
+const helnmet = require('helmet');
 
 const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
 const postsRouter = require('./routes/posts');
 const passportConfig = require('./passport');
-const hashtagRouter = require('./routes/hashtag')
+const hashtagRouter = require('./routes/hashtag');
+const { use } = require('passport');
 
 dotenv.config();
 const app = express();
@@ -29,8 +32,14 @@ db.sequelize.sync()
 //     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
 //     next();
 // });
+if(process.env.NODE_ENV === 'production') {
+    app.use(morgan('combined'));
+    app.use(hpp());
+    app.use(helnmet());
+} else {
+    app.use(morgan('dev'));
+}
 
-app.use(morgan('dev'));
 app.use(cors({
     origin: true,
     credentials: true,
