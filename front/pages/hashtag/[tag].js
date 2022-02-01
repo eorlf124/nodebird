@@ -12,6 +12,7 @@ import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST } from "../../reducers/user";
 import { LOAD_HASHTAG_POSTS_REQUEST } from "../../reducers/post";
 import AppLayout from '../../components/AppLayout';
 import PostCard from '../../components/PostCard';
+import { backUrl } from "../../config/config";
 
 const Hashtag = () => {
     const dispatch = useDispatch();
@@ -50,7 +51,7 @@ const Hashtag = () => {
                     <meta name="description" content={`${userInfo.nickname}님의 게시글`} />
                     <meta property="og:title" content={`${userInfo.nickname}님의 게시글`} />
                     <meta property="og:description" content={`${userInfo.nickname}님의 게시글`} />
-                    <meta property="og:image" content="http://localhost:3060/favicon.ico" />
+                    <meta property="og:image" content={`${backUrl}/favicon.ico`} />
                 </Head>
             )}
             {userInfo
