@@ -36,14 +36,17 @@ if(process.env.NODE_ENV === 'production') {
     app.use(morgan('combined'));
     app.use(hpp());
     app.use(helnmet());
+    app.use(cors({
+        origin: ['http://nodebrid.ga', 'http://nodebrid.ga:3060', 'http://localhost:3060'],
+        credentials: true,
+    }));
 } else {
     app.use(morgan('dev'));
+    app.use(cors({
+        origin: true,
+        credentials: true,
+    }));
 }
-
-app.use(cors({
-    origin: ['http://13.125.110.81:3060', 'nodebird.com', 'http://localhost:3060'],
-    credentials: true,
-}));
 
 // 첫번째 파라미터 : localhost:3065/imgs/ url로 접근하면 uploads폴더 호출
 // join : 현재폴더경로/uploads
@@ -59,6 +62,12 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET, // 쿠키 해시값에 대한 복호화 키값
+    cookie: {
+        httpOnly: true, //자바스크립트 파일로 직접 접근 차단
+        secure: false, //https일 경우 true
+        //nodebrid.com 과 api.nodebird.com이 쿠키공유가 된다.
+        domain: process.env.NODE_ENV === 'production' && '.nodebrid.ga'
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());

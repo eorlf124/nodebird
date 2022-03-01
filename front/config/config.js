@@ -1,2 +1,2 @@
 // eslint-disable-next-line import/prefer-default-export
-export const backUrl = 'http://13.125.235.216:3065';
+export const backUrl = 'http://nodebrid.ga:3065';
