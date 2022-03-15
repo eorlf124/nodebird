@@ -35,7 +35,9 @@ db.sequelize.sync()
 if(process.env.NODE_ENV === 'production') {
     app.use(morgan('combined'));
     app.use(hpp());
-    app.use(helnmet());
+    app.use(helnmet({
+        crossOriginEmbedderPolicy: false,
+    }));
     app.use(cors({
         origin: ['http://nodebrid.ga', 'http://nodebrid.ga:3060', 'http://localhost:3060'],
         credentials: true,

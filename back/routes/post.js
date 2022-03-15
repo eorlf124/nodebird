@@ -4,6 +4,8 @@ const { isLoggedIn } = require('./middlewares');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const multerS3 = require('multer-s3');
+const AWS = require('aws-sdk');
 
 const router = express.Router();
 
@@ -22,17 +24,18 @@ router.get('/', (req, res) => { // /post
     ]);
 });
 
+AWS.config.update({
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKeyId: process.env.S3_SECRET_ACCESS_KEY_ID,
+    region: 'ap-northeast-2',
+});
 const upload = multer({
-    storage: multer.diskStorage({
-        destination(req, file, done) {
-            done(null, 'uploads');
-        },
-        filename(req, file, done) {
-            const ext = path.extname(file.originalname); // .확장자 추출
-            const basename = path.basename(file.originalname, ext); // 확장자 제외한 파일명
-            let toDates = new Date().getTime();
-            done(null, basename + '_' + toDates + ext);
-        },
+    storage: multerS3({
+        s3: new AWS.S3(),
+        bucket: 'pdg-nodebird',
+        key(req, file, cb){
+            cb(null, `original/${Date.now()}_${path.basename(file.originalname)}`)
+        }
     }),
     limits: { fileSize: 20 * 1024 * 1024 }, // 파일 용량제한 20MB
 });
@@ -94,7 +97,7 @@ router.post('/', isLoggedIn, upload.none(), async (req, res, next) => {
  */
 router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next) => {
     console.log(req.files);
-    res.json(req.files.map((v) => v.filename));      
+    res.json(req.files.map((v) => v.location));      
 });
 
 /**
