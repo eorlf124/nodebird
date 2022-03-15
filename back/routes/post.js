@@ -29,7 +29,7 @@ router.get('/', (req, res) => { // /post
 
 AWS.config.update({
     accessKeyId: process.env.S3_ACCESS_KEY_ID,
-    secretAccessKeyId: process.env.S3_SECRET_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY_ID,
     region: 'ap-northeast-2',
 });
 const upload = multer({
